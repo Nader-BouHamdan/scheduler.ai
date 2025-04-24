@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 
 const Dashboard = () => {
   return (
-    <div>
-      <h1>Welcome to Scheduler AI</h1>
+    <div className="container">
+      <h1>Welcome to Your Dashboard</h1>
       <nav>
         <ul>
           <li>

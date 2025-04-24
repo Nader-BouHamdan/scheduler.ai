@@ -1,25 +1,37 @@
 const express = require('express');
 const Task = require('../models/Task');
+const authMiddleware = require('../middlewares/authMiddleware'); // Import the middleware
 const router = express.Router();
 
-// CREATE: Add a new task
-router.post('/tasks', async (req, res) => {
+// Create a new task (protected route)
+router.post('/tasks', authMiddleware, async (req, res) => {
+  const { taskName, description, dueDate, priority } = req.body;
+
   try {
-    const newTask = new Task(req.body);
-    await newTask.save();
-    res.status(201).json(newTask);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
+    const task = new Task({
+      taskName,
+      description,
+      dueDate,
+      priority,
+      user: req.userId, // Associate task with logged-in user
+    });
+
+    await task.save();
+    res.status(201).json(task);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error creating task' });
   }
 });
 
-// READ: Get all tasks
-router.get('/tasks', async (req, res) => {
+// Get tasks for the logged-in user (protected route)
+router.get('/tasks', authMiddleware, async (req, res) => {
   try {
-    const tasks = await Task.find();
+    const tasks = await Task.find({ user: req.userId }); // Only fetch tasks for the logged-in user
     res.json(tasks);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error fetching tasks' });
   }
 });
 
