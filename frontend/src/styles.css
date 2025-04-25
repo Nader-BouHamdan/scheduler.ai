@@ -46,6 +46,7 @@ button {
     cursor: pointer;
     border-radius: 5px;
     margin: 10px 0;
+    transition: background-color 0.3s ease;
 }
 
 button:hover {
@@ -88,193 +89,263 @@ nav ul li {
 .container {
     max-width: 1200px;
     margin: 0 auto;
+    padding: 20px;
 }
 
 /* Calendar Container */
 .calendar-container {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    /* 7 columns for days of the week */
-    grid-gap: 10px;
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 24px;
+    margin: 20px auto;
+    max-width: 900px;
 }
 
-/* Days of the Week */
-.calendar-container .day-header {
-    font-weight: bold;
-    text-align: center;
-    background-color: #3498db;
-    color: white;
-    padding: 10px;
-}
-
-/* Calendar Day Buttons */
-.calendar-container .day-button {
-    background-color: #ecf0f1;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    text-align: center;
-    padding: 15px;
-    cursor: pointer;
-    font-size: 1.2rem;
-}
-
-.calendar-container .day-button:hover {
-    background-color: #3498db;
-    color: white;
-}
-
-.calendar-container .day-button.selected {
-    background-color: #2980b9;
-    color: white;
-}
-
-/* Add styling for navigation buttons (Today, Back, Next, etc.) */
+/* Calendar Navigation */
 .calendar-nav {
-    text-align: center;
-    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding: 0 12px;
 }
 
 .calendar-nav button {
     background-color: #3498db;
     color: white;
     border: none;
-    padding: 10px;
-    margin: 5px;
+    padding: 8px 16px;
+    border-radius: 6px;
     cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
 }
 
 .calendar-nav button:hover {
     background-color: #2980b9;
 }
 
-/* TaskInput */
-.task-input-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-color: #f7f7f7;
-  }
-  
-  .task-input-form {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 600px; /* Keep form within a reasonable width */
-  }
-  
-  .task-input-form h2 {
-    font-size: 2rem;
-    margin-bottom: 20px;
-    text-align: center;
-  }
-  
-  .task-input-form input,
-  .task-input-form textarea,
-  .task-input-form select {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 10px;
-    font-size: 1rem;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-  }
-  
-  .task-input-form button {
-    width: 100%;
-    padding: 12px;
-    font-size: 1.1rem;
-    background-color: #3498db;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 10px;
-  }
-  
-  .task-input-form button:hover {
-    background-color: #2980b9;
-  }
-  
-  .task-input-form button:focus {
-    outline: none;
-  }
-  
-/* Centering for Login and Register */
-.auth-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;  /* Full viewport height to vertically center */
-    background-color: #f7f7f7;
-  }
-  
-  .auth-form {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px; /* Ensure the form is not too wide */
-  }
-  
-  .auth-form h2 {
-    font-size: 2rem;
-    margin-bottom: 20px;
-    text-align: center;
-  }
-  
-  .auth-form input,
-  .auth-form textarea,
-  .auth-form select {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 10px;
-    font-size: 1rem;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-  }
-  
-  .auth-form button {
-    width: 100%;
-    padding: 12px;
-    font-size: 1.1rem;
-    background-color: #3498db;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 10px;
-  }
-  
-  .auth-form button:hover {
-    background-color: #2980b9;
-  }
-  
-  .auth-form button:focus {
-    outline: none;
-  }
-  
-  .auth-form p {
-    text-align: center;
-    color: red;
-  }
-  /* For the Sign Up text */
-.auth-form p {
-  text-align: center;
-  margin-top: 15px;
+.calendar-nav span {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #2c3e50;
 }
 
-.auth-form a {
-  color: #3498db;
-  text-decoration: underline;
+/* Calendar Header */
+.calendar-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    margin-bottom: 8px;
 }
 
-.auth-form a:hover {
-  color: #2980b9;
+.day-header {
+    text-align: center;
+    font-weight: 600;
+    padding: 12px;
+    background-color: #f8f9fa;
+    color: #2c3e50;
+    border-radius: 8px;
+    font-size: 0.9rem;
+}
+
+/* Calendar Grid */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+}
+
+/* Day Button */
+.day-button {
+    background-color: white;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 12px;
+    min-height: 100px;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.day-button:hover {
+    background-color: #f8f9fa;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.day-button.selected {
+    background-color: #e3f2fd;
+    border-color: #2196f3;
+    color: #1976d2;
+}
+
+/* Day Number */
+.day-number {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #2c3e50;
+}
+
+.selected .day-number {
+    color: #1976d2;
+}
+
+/* Task Indicator */
+.task-indicator {
+    width: 6px;
+    height: 6px;
+    background-color: #2196f3;
+    border-radius: 50%;
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Selected Date Tasks */
+.selected-date-tasks {
+    margin-top: 32px;
+    padding: 24px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.selected-date-tasks h3 {
+    color: #2c3e50;
+    margin-bottom: 16px;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.task-list {
+    display: grid;
+    gap: 12px;
+}
+
+.task-item {
+    background-color: #f8f9fa;
+    padding: 16px;
+    border-radius: 8px;
+    border-left: 4px solid #2196f3;
+    transition: transform 0.2s ease;
+}
+
+.task-item:hover {
+    transform: translateX(4px);
+}
+
+.task-item h4 {
+    color: #2c3e50;
+    margin-bottom: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.task-item p {
+    color: #666;
+    margin-bottom: 12px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+/* Priority Badge */
+.priority-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.priority-badge.low {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.priority-badge.medium {
+    background-color: #fff3e0;
+    color: #f57c00;
+}
+
+.priority-badge.high {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .calendar-container {
+        padding: 16px;
+        margin: 12px;
+    }
+
+    .calendar-grid {
+        gap: 4px;
+    }
+
+    .day-button {
+        padding: 8px;
+        min-height: 80px;
+    }
+
+    .day-number {
+        font-size: 1rem;
+    }
+
+    .calendar-nav {
+        flex-direction: row;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .calendar-nav span {
+        font-size: 1.2rem;
+    }
+
+    .selected-date-tasks {
+        margin: 16px 12px;
+        padding: 16px;
+    }
+}
+
+/* Loading State */
+.loading {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+}
+
+/* Error State */
+.error {
+    color: #c62828;
+    text-align: center;
+    padding: 20px;
+    background-color: #ffebee;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+/* Animation for task items */
+.task-item {
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

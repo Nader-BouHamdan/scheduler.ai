@@ -20,38 +20,50 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { username, email, password } = req.body;
-
     try {
+      const { username, email, password } = req.body;
+      
       // Check if user already exists
       const existingUser = await User.findOne({ email });
       if (existingUser) {
         return res.status(400).json({ message: 'User already exists' });
       }
 
-      // Hash the password
-      const hashedPassword = await bcrypt.hash(password, 10);
+      // Hash password
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
 
       // Create new user
       const user = new User({
         username,
         email,
-        password: hashedPassword,
+        password: hashedPassword
       });
 
       await user.save();
 
-      // Generate JWT token
+      // Create JWT token
       const token = jwt.sign(
         { userId: user._id },
-        process.env.JWT_SECRET, // Store JWT_SECRET in .env
+        process.env.JWT_SECRET,
         { expiresIn: '1h' }
       );
 
-      res.status(201).json({ message: 'User registered successfully', token });
+      res.status(201).json({
+        message: 'User registered successfully',
+        token,
+        user: {
+          id: user._id,
+          username: user.username,
+          email: user.email
+        }
+      });
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Server error' });
+      console.error('Registration error:', error);
+      res.status(500).json({
+        message: 'Error registering user',
+        error: error.message
+      });
     }
   }
 );
@@ -92,8 +104,12 @@ router.post(
 
       res.json({ message: 'Logged in successfully', token });
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Server error' });
+      console.error('Error during login:', error);
+      res.status(500).json({ 
+        message: 'Server error', 
+        error: error.message,
+        details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      });
     }
   }
 );

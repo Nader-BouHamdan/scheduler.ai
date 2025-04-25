@@ -8,6 +8,7 @@ const TaskInput = () => {
   const [description, setDescription] = useState('');
   const [dueDate, setDueDate] = useState('');
   const [priority, setPriority] = useState('medium');
+  const [error, setError] = useState('');
   const navigate = useNavigate(); // Hook for navigation
 
   const handleSubmit = async (e) => {
@@ -17,7 +18,7 @@ const TaskInput = () => {
       await api.post('/tasks', taskData);
       navigate('/calendar'); // Redirect to calendar after task is added
     } catch (error) {
-      console.error('Error adding task:', error);
+      setError('Failed to add task. Please try again.');
     }
   };
 
@@ -26,31 +27,44 @@ const TaskInput = () => {
       <BackButton /> {/* Back Button */}
       <div className="task-input-form">
         <h2>Add New Task</h2>
+        {error && <p className="error">{error}</p>}
         <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            placeholder="Task Name"
-            value={taskName}
-            onChange={(e) => setTaskName(e.target.value)}
-            required
-          />
-          <textarea
-            placeholder="Description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            required
-          />
-          <input
-            type="datetime-local"
-            value={dueDate}
-            onChange={(e) => setDueDate(e.target.value)}
-            required
-          />
-          <select value={priority} onChange={(e) => setPriority(e.target.value)}>
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
-          </select>
+          <div className="form-group">
+            <input
+              type="text"
+              placeholder="Task Name"
+              value={taskName}
+              onChange={(e) => setTaskName(e.target.value)}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <textarea
+              placeholder="Description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <input
+              type="datetime-local"
+              value={dueDate}
+              onChange={(e) => setDueDate(e.target.value)}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <select 
+              value={priority} 
+              onChange={(e) => setPriority(e.target.value)}
+              className="priority-select"
+            >
+              <option value="low">Low Priority</option>
+              <option value="medium">Medium Priority</option>
+              <option value="high">High Priority</option>
+            </select>
+          </div>
           <button type="submit">Add Task</button>
         </form>
       </div>
