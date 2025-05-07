@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
-import api from '../axios';
-import BackButton from './backButton'; // Import BackButton
+import api from '../../axios';
+import BackButton from '../../components/BackButton/backButton'; // Import BackButton
+import './styles/TaskInput.css';
 
 const TaskInput = () => {
   const [taskName, setTaskName] = useState('');

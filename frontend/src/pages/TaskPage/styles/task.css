@@ -1,0 +1,103 @@
+/* Task Styles */
+.task-item {
+    background-color: var(--background-color);
+    padding: 16px;
+    border-radius: 8px;
+    border-left: 4px solid var(--primary-color);
+    transition: transform 0.2s ease;
+    animation: slideIn 0.3s ease-out;
+}
+
+.task-item:hover {
+    transform: translateX(4px);
+}
+
+.task-details {
+    background-color: var(--background-light);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-md);
+}
+
+.task-details h1 {
+    color: #2c3e50;
+    margin-bottom: 24px;
+    font-size: 2rem;
+}
+
+.task-details p {
+    margin-bottom: 16px;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.task-details strong {
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.task-details button {
+    margin-right: 12px;
+    margin-top: 24px;
+}
+
+.task-details a {
+    display: inline-block;
+    margin-top: 24px;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.task-details a:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+/* Priority Badge */
+.priority-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.priority-badge.low {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.priority-badge.medium {
+    background-color: #fff3e0;
+    color: #f57c00;
+}
+
+.priority-badge.high {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+/* Animations */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .task-details {
+        padding: 20px;
+    }
+
+    .task-details h1 {
+        font-size: 1.5rem;
+    }
+} 

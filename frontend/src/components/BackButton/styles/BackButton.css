@@ -1,0 +1,49 @@
+/* Back Button Container */
+.back-button-container {
+    margin: 20px 0;
+}
+
+/* Back Button */
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    color: #2c3e50;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.back-button:hover {
+    background-color: #e9ecef;
+    transform: translateX(-4px);
+}
+
+/* Back Icon */
+.back-icon {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .back-button-container {
+        margin: 16px 0;
+    }
+
+    .back-button {
+        padding: 6px 12px;
+        font-size: 0.9rem;
+    }
+
+    .back-icon {
+        width: 16px;
+        height: 16px;
+    }
+} 

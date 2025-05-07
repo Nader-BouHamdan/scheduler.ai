@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
-import api from '../axios';
-import BackButton from './backButton'; // Import BackButton
+import { useNavigate } from 'react-router-dom';
+import api from '../../axios';
+import BackButton from '../../components/BackButton/backButton';
+import './styles/Calendar.css';
 
 const CalendarView = () => {
   const [tasks, setTasks] = useState([]);
@@ -42,12 +43,29 @@ const CalendarView = () => {
 
   // Helper function to get the days of the month
   const getDaysInMonth = (month, year) => {
-    const date = new Date(year, month, 1);
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
     const days = [];
-    while (date.getMonth() === month) {
-      days.push(new Date(date));
-      date.setDate(date.getDate() + 1);
+    
+    // Add padding days for the start of the month
+    const firstDayOfWeek = firstDay.getDay(); // 0 = Sunday, 1 = Monday, etc.
+    for (let i = 0; i < firstDayOfWeek; i++) {
+      const paddingDate = new Date(year, month, -i);
+      days.unshift(paddingDate);
     }
+    
+    // Add the actual days of the month
+    for (let date = new Date(firstDay); date <= lastDay; date.setDate(date.getDate() + 1)) {
+      days.push(new Date(date));
+    }
+    
+    // Add padding days for the end of the month if needed
+    const remainingDays = 42 - days.length; // 6 rows * 7 days = 42
+    for (let i = 1; i <= remainingDays; i++) {
+      const paddingDate = new Date(year, month + 1, i);
+      days.push(paddingDate);
+    }
+    
     return days;
   };
 
@@ -179,6 +197,7 @@ const CalendarView = () => {
           {currentMonthDays.map((day) => {
             const dayTasks = getTasksForDate(day);
             const isSelected = selectedDate && isSameDay(selectedDate, day);
+            const isCurrentMonth = day.getMonth() === currentMonth.getMonth();
             
             console.log('Rendering day:', {
               date: day.toDateString(),
@@ -189,7 +208,7 @@ const CalendarView = () => {
             return (
               <div
                 key={day.toISOString()}
-                className={`day-button ${isSelected ? 'selected' : ''}`}
+                className={`day-button ${isSelected ? 'selected' : ''} ${!isCurrentMonth ? 'other-month' : ''}`}
                 onClick={() => handleSelectDate(day)}
               >
                 <span className="day-number">{day.getDate()}</span>

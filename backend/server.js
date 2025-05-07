@@ -2,19 +2,41 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const { OpenAI } = require('openai');
+const morgan = require('morgan');
+const { limiter, securityHeaders } = require('./middlewares/security');
+const { AppError, handleError } = require('./utils/errorHandler');
 require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 5000;
 
+// Security middleware
+app.use(securityHeaders);
+app.use(limiter);
+
+// Logging middleware
+app.use(morgan('dev'));
+
 // CORS configuration
 const corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
   optionsSuccessStatus: 200
 };
+
+// Initialize OpenAI
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+// Import routes
+const authRoutes = require('./routes/authRoutes');
+const taskRoutes = require('./routes/taskRoutes');
+
+const User = require('./models/User');
+const Task = require('./models/Task');
 
 // Apply CORS middleware
 app.use(cors(corsOptions));
@@ -27,14 +49,6 @@ mongoose.connect(process.env.MONGODB_URI)
 .then(() => console.log("Connected to MongoDB"))
 .catch((err) => console.log("MongoDB connection error:", err));
 
-// Initialize OpenAI
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
-// Import routes
-const authRoutes = require('./routes/authRoutes');
-const taskRoutes = require('./routes/taskRoutes');
 
 // Routes
 app.get('/', (req, res) => {
@@ -46,11 +60,16 @@ app.use('/api', authRoutes);
 app.use('/api', taskRoutes);
 
 // AI task suggestions route
-app.post('/api/suggest-tasks', async (req, res) => {
-  const { userPreferences } = req.body;
-  const prompt = `Suggest tasks for a user who prefers ${userPreferences}`;
-  
+app.post('/api/suggest-tasks', async (req, res, next) => {
   try {
+    const { userPreferences } = req.body;
+    
+    if (!userPreferences) {
+      throw new AppError('User preferences are required', 400);
+    }
+
+    const prompt = `Suggest tasks for a user who prefers ${userPreferences}`;
+    
     const response = await openai.chat.completions.create({
       model: 'gpt-3.5-turbo',
       messages: [
@@ -61,13 +80,16 @@ app.post('/api/suggest-tasks', async (req, res) => {
     
     res.json({ suggestion: response.choices[0].message.content });
   } catch (error) {
-    console.error('Error with OpenAI API:', error);
-    res.status(500).json({ error: 'Failed to get task suggestions' });
+    next(error);
   }
 });
 
 // Error handling middleware
 app.use((err, req, res, next) => {
+  if (err instanceof AppError) {
+    return handleError(err, res);
+  }
+  
   console.error('Error:', err);
   res.status(500).json({
     error: 'Something went wrong!',

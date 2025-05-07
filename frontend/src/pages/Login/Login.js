@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
-import api from '../axios';
-import { Link } from 'react-router-dom'; // Import Link from React Router
-import './Auth.css';
+import { useNavigate, Link } from 'react-router-dom';
+import api from '../../axios';
+import './styles/Login.css';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -40,38 +39,39 @@ const Login = () => {
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-form">
-        <h2>Login</h2>
-        {error && <p className="error">{error}</p>}
+    <div className="login-container">
+      <div className="login-form">
+        <h2 className="login-title">Login</h2>
+        {error && <p className="error-message">{error}</p>}
         <form onSubmit={handleSubmit}>
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            disabled={isLoading}
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            disabled={isLoading}
-          />
-          <button type="submit" disabled={isLoading}>
+          <div className="form-group">
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              disabled={isLoading}
+            />
+          </div>
+          <div className="form-group">
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              disabled={isLoading}
+            />
+          </div>
+          <button type="submit" className="submit-button" disabled={isLoading}>
             {isLoading ? 'Logging in...' : 'Login'}
           </button>
         </form>
 
-        {/* Sign Up link below the login form */}
-        <p>
+        <p className="register-link">
           Don't have an account?{' '}
-          <Link to="/register" style={{ color: '#3498db', textDecoration: 'underline' }}>
-            Sign Up
-          </Link>
+          <Link to="/register">Sign Up</Link>
         </p>
       </div>
     </div>
