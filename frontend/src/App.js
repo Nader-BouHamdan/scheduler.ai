@@ -9,6 +9,8 @@ import Login from './pages/Login/Login';
 import Register from './pages/Register/Register';
 import TaskInput from './pages/TaskInput/taskInput';
 import Calendar from './pages/Calendar/Calendar';
+import Timeline from './pages/Timeline/Timeline';
+import TaskTable from './pages/TaskTable/TaskTable';
 
 // Styles
 import './App.css';
@@ -25,7 +27,7 @@ function App() {
             
             {/* Protected routes */}
             
-            <Route path="/home" element={<Home />} />
+            <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
             <Route
               path="/task-input"
               element={
@@ -42,9 +44,22 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/timeline"
+              element={
+                <ProtectedRoute>
+                  <Timeline />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/tasks" element={
+              <ProtectedRoute>
+                <TaskTable />
+              </ProtectedRoute>
+            } />
             
             {/* Catch all route */}
-            <Route path="*" element={<Navigate to="/login" replace />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>
       </Router>

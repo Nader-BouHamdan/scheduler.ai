@@ -5,7 +5,7 @@ const router = express.Router();
 
 // Create a new task (protected route)
 router.post('/tasks', authMiddleware, async (req, res) => {
-  const { taskName, description, dueDate, priority } = req.body;
+  const { taskName, description, dueDate, priority, startDate, endDate } = req.body;
 
   // Validate required fields
   if (!taskName || !description || !dueDate || !priority) {
@@ -27,7 +27,9 @@ router.post('/tasks', authMiddleware, async (req, res) => {
       description,
       dueDate: new Date(dueDate),
       priority,
-      user: req.userId
+      user: req.userId,
+      startDate: startDate ? new Date(startDate) : new Date(),
+      endDate: endDate ? new Date(endDate) : new Date(dueDate)
     });
 
     await task.save();
@@ -44,35 +46,31 @@ router.post('/tasks', authMiddleware, async (req, res) => {
 // Get tasks for the logged-in user (protected route)
 router.get('/tasks', authMiddleware, async (req, res) => {
   try {
-    console.log('Fetching tasks for user:', req.userId);
+    const { startDate, endDate } = req.query;
+    let query = { user: req.userId };
 
-    // First, let's see all tasks regardless of user
-    const allTasks = await Task.find({}).lean();
-    console.log('All tasks in database:', {
-      count: allTasks.length,
-      tasks: allTasks.map(t => ({
-        id: t._id,
-        name: t.taskName,
-        hasUser: !!t.user,
-        userId: t.user
-      }))
-    });
+    // Add date range filter if provided
+    if (startDate && endDate) {
+      query.dueDate = {
+        $gte: new Date(startDate),
+        $lte: new Date(endDate)
+      };
+    }
 
-    // Now get tasks for the specific user
-    const userTasks = await Task.find({ user: req.userId }).lean();
-    console.log('User specific tasks:', {
-      userId: req.userId,
-      count: userTasks.length,
-      tasks: userTasks.map(t => ({
-        id: t._id,
-        name: t.taskName
-      }))
-    });
+    const userTasks = await Task.find(query).lean();
 
     // Convert dates to ISO strings for consistent handling
     const formattedTasks = userTasks.map(task => ({
       ...task,
+      _id: task._id,
+      title: task.taskName,
+      date: task.dueDate,
+      startTime: task.startTime,
+      description: task.description,
+      priority: task.priority,
       dueDate: new Date(task.dueDate).toISOString(),
+      startDate: task.startDate ? new Date(task.startDate).toISOString() : null,
+      endDate: task.endDate ? new Date(task.endDate).toISOString() : null,
       createdAt: new Date(task.createdAt).toISOString()
     }));
 
@@ -104,6 +102,8 @@ router.put('/tasks/:id', authMiddleware, async (req, res) => {
       { 
         ...req.body,
         dueDate: req.body.dueDate ? new Date(req.body.dueDate) : task.dueDate,
+        startDate: req.body.startDate ? new Date(req.body.startDate) : task.startDate,
+        endDate: req.body.endDate ? new Date(req.body.endDate) : (req.body.dueDate ? new Date(req.body.dueDate) : task.endDate),
         user: req.userId 
       },
       { new: true }

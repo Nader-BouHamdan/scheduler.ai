@@ -36,6 +36,8 @@ const Home = () => {
             <>
               <button className="action-button" onClick={() => navigate('/task-input')}>Add New Task</button>
               <button className="action-button" onClick={() => navigate('/calendar')}>View Calendar</button>
+              <button className="action-button" onClick={() => navigate('/timeline')}>View Timeline</button>
+              <button className="action-button" onClick={() => navigate('/tasks')}>View All Tasks</button>
             </>
         </div>
       </div>

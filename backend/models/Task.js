@@ -9,6 +9,14 @@ const taskSchema = new mongoose.Schema({
     type: String, 
     required: true 
   },
+  startDate: {
+    type: Date,
+    default: Date.now
+  },
+  endDate: {
+    type: Date,
+    default: null // will set to dueDate in route if not provided
+  },
   dueDate: { 
     type: Date, 
     required: true 
